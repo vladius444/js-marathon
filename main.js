@@ -3,12 +3,11 @@ const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
 
 const character = {
     name: 'Pikachu',
-    defaultHP: 100,
-    damageHP: 100,
+    defaultHP: 200,
+    damageHP: 200,
     maxDamageHP: 25,
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
-    renderHP,
     changeHP,
 }
 
@@ -19,7 +18,6 @@ const enemy = {
     maxDamageHP: 23,
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
-    renderHP,
     changeHP,
 }
 
@@ -36,9 +34,8 @@ function changeHP(count) {
         this.damageHP -= count
     }
 
-    this.renderHP()
+    renderHP.call(this)
 }
-
 
 $btnAttackCharacter.addEventListener('click', () => {
     console.log('Kick character')
@@ -59,9 +56,8 @@ function random(max) {
 function initGame() {
     console.log("START GAME")
 
-    character.renderHP()
-    enemy.renderHP()
-
+    renderHP.call(character)
+    renderHP.call(enemy)
 }
 
 function finishGame(name) {
