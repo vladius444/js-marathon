@@ -7,7 +7,9 @@ const character = {
     damageHP: 100,
     maxDamageHP: 25,
     elHP: document.getElementById('health-character'),
-    elProgressbar: document.getElementById('progressbar-character')
+    elProgressbar: document.getElementById('progressbar-character'),
+    renderHP,
+    changeHP,
 }
 
 const enemy = {
@@ -16,18 +18,38 @@ const enemy = {
     damageHP: 100,
     maxDamageHP: 23,
     elHP: document.getElementById('health-enemy'),
-    elProgressbar: document.getElementById('progressbar-enemy')
+    elProgressbar: document.getElementById('progressbar-enemy'),
+    renderHP,
+    changeHP,
 }
+
+function renderHP() {
+    this.elHP.innerText = this.damageHP + '/' + this.defaultHP
+    this.elProgressbar.style.width = this.damageHP + '%'
+}
+
+function changeHP(count) {
+    if (this.damageHP < count) {
+        this.damageHP = 0
+        finishGame(this.name)
+    } else {
+        this.damageHP -= count
+    }
+
+    this.renderHP()
+}
+
 
 $btnAttackCharacter.addEventListener('click', () => {
     console.log('Kick character')
-    changeHP(random(character.maxDamageHP), enemy)
+
+    enemy.changeHP(random(character.maxDamageHP))
 })
 
 $btnAttackEnemy.addEventListener('click', () => {
     console.log('Kick enemy')
 
-    changeHP(random(enemy.maxDamageHP), character)
+    character.changeHP(random(enemy.maxDamageHP))
 })
 
 function random(max) {
@@ -37,40 +59,16 @@ function random(max) {
 function initGame() {
     console.log("START GAME")
 
-    renderHP(character)
-    renderHP(enemy)
+    character.renderHP()
+    enemy.renderHP()
 
 }
 
-function renderHP(person) {
-    renderHPLife(person)
-    renderProgressbar(person)
-}
+function finishGame(name) {
+    alert(name + ' проиграл')
 
-function renderHPLife(person) {
-    person.elHP.innerText = person.damageHP + '/' + person.defaultHP
-}
-
-function renderProgressbar(person) {
-    person.elProgressbar.style.width = person.damageHP + '%'
-}
-
-function finishGame(loser) {
-    alert('person: ' + loser.name + ' проиграл')
-    //todo бывает ничья когда в один ход оба меньше нуля
     $btnAttackEnemy.disabled = true
     $btnAttackCharacter.disabled = true
-}
-
-function changeHP(count, person) {
-    if (person.damageHP < count) {
-        person.damageHP = 0
-        finishGame(person)
-    } else {
-        person.damageHP -= count
-    }
-
-    renderHP(person)
 }
 
 initGame()
