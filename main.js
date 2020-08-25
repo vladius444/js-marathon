@@ -23,7 +23,7 @@ const enemy = {
 
 function renderHP() {
     this.elHP.innerText = this.damageHP + '/' + this.defaultHP
-    this.elProgressbar.style.width = this.damageHP + '%'
+    this.elProgressbar.style.width = (this.damageHP / this.defaultHP) * 100  + '%'
 }
 
 function changeHP(count) {
