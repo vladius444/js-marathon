@@ -33,8 +33,8 @@ function renderHP() {
 function changeHP(count) {
     this.hp.current -= count
 
-    const battleLog = this === enemy ? generateBattleLog(this, character, count) : generateBattleLog(this, enemy, count)
-    console.log(battleLog)
+    const newBattleLog = this === enemy ? generateBattleLog(this, character, count) : generateBattleLog(this, enemy, count)
+    addLogRow(newBattleLog)
 
     if (this.hp.current < 0) {
         this.hp.current = 0
@@ -42,6 +42,16 @@ function changeHP(count) {
     }
 
     renderHP.call(this)
+}
+
+const $logs = document.querySelector('#logs')
+
+function addLogRow(input) {
+    const $p = document.createElement('p')
+
+    $p.innerHTML = input
+
+    $logs.insertBefore($p, $logs.children[0])
 }
 
 $btnAttackCharacter.addEventListener('click', () => {
@@ -78,18 +88,20 @@ initGame()
 
 function generateBattleLog(firstPerson, secondPerson, damage) {
     const damageStat = `-${damage}, [${firstPerson.hp.current}/${firstPerson.hp.total}]`
+    const firstName = `<b style="color: #00a3e2">${firstPerson.name}</b>`
+    const secondName = `<b style="color: #d20000">${secondPerson.name}</b>`
 
     const logs = [
-        `${firstPerson.name} вспомнил что-то важное, но неожиданно ${secondPerson.name}, не помня себя от испуга, ударил в предплечье врага. ${damageStat}`,
-        `${firstPerson.name} поперхнулся, и за это ${secondPerson.name} с испугу приложил прямой удар коленом в лоб врага. ${damageStat}`,
-        `${firstPerson.name} забылся, но в это время наглый ${secondPerson.name}, приняв волевое решение, неслышно подойдя сзади, ударил. ${damageStat}`,
-        `${firstPerson.name} пришел в себя, но неожиданно ${secondPerson.name} случайно нанес мощнейший удар. ${damageStat}`,
-        `${firstPerson.name} поперхнулся, но в это время ${secondPerson.name} нехотя раздробил кулаком \<вырезанно цензурой\> противника. ${damageStat}`,
-        `${firstPerson.name} удивился, а ${secondPerson.name} пошатнувшись влепил подлый удар. ${damageStat}`,
-        `${firstPerson.name} высморкался, но неожиданно ${secondPerson.name} провел дробящий удар. ${damageStat}`,
-        `${firstPerson.name} пошатнулся, и внезапно наглый ${secondPerson.name} беспричинно ударил в ногу противника. ${damageStat}`,
-        `${firstPerson.name} расстроился, как вдруг, неожиданно ${secondPerson.name} случайно влепил стопой в живот соперника. ${damageStat}`,
-        `${firstPerson.name} пытался что-то сказать, но вдруг, неожиданно ${secondPerson.name} со скуки, разбил бровь сопернику. ${damageStat}`
+        `${firstName} вспомнил что-то важное, но неожиданно ${secondName}, не помня себя от испуга, ударил в предплечье врага. ${damageStat}`,
+        `${firstName} поперхнулся, и за это ${secondName} с испугу приложил прямой удар коленом в лоб врага. ${damageStat}`,
+        `${firstName} забылся, но в это время наглый ${secondName}, приняв волевое решение, неслышно подойдя сзади, ударил. ${damageStat}`,
+        `${firstName} пришел в себя, но неожиданно ${secondName} случайно нанес мощнейший удар. ${damageStat}`,
+        `${firstName} поперхнулся, но в это время ${secondName} нехотя раздробил кулаком \<вырезанно цензурой\> противника. ${damageStat}`,
+        `${firstName} удивился, а ${secondName} пошатнувшись влепил подлый удар. ${damageStat}`,
+        `${firstName} высморкался, но неожиданно ${secondName} провел дробящий удар. ${damageStat}`,
+        `${firstName} пошатнулся, и внезапно наглый ${secondName} беспричинно ударил в ногу противника. ${damageStat}`,
+        `${firstName} расстроился, как вдруг, неожиданно ${secondName} случайно влепил стопой в живот соперника. ${damageStat}`,
+        `${firstName} пытался что-то сказать, но вдруг, неожиданно ${secondName} со скуки, разбил бровь сопернику. ${damageStat}`
     ];
 
     return logs[random(logs.length) - 1]
