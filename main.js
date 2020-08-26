@@ -26,8 +26,10 @@ const enemy = {
 }
 
 function renderHP() {
-    this.elHP.innerText = this.hp.current + '/' + this.hp.total
-    this.elProgressbar.style.width = (this.hp.current / this.hp.total) * 100  + '%'
+    const {hp: {current, total}} = this
+
+    this.elHP.innerText = current + '/' + total
+    this.elProgressbar.style.width = (current / total) * 100  + '%'
 }
 
 function changeHP(count) {
