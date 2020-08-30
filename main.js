@@ -11,6 +11,7 @@ const character = {
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
     changeHP,
+    clickCounter: countButtonClick(),
 }
 
 const enemy = {
@@ -23,6 +24,7 @@ const enemy = {
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
     changeHP,
+    clickCounter: countButtonClick(),
 }
 
 function renderHP() {
@@ -56,21 +58,33 @@ function addLogRow(input) {
     $logs.insertBefore($p, $logs.children[0])
 }
 
+function countButtonClick() {
+    let count = 0
+
+    return function (n = 0) {
+        count += n
+        console.log(`${this.name} clicked: ${count} times`)
+    }
+
+}
+
 $btnAttackCharacter.addEventListener('click', () => {
+    character.clickCounter(1)
+
     console.log('Kick character')
 
     enemy.changeHP(random(character.maxDamageHP))
 })
 
 $btnAttackEnemy.addEventListener('click', () => {
+    enemy.clickCounter(1)
+
     console.log('Kick enemy')
 
     character.changeHP(random(enemy.maxDamageHP))
 })
 
-function random(max) {
-    return Math.ceil(Math.random() * max)
-}
+const random = (max) => Math.ceil(Math.random() * max)
 
 function initGame() {
     console.log("START GAME")
