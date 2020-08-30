@@ -1,6 +1,3 @@
-const $btnAttackCharacter = document.getElementById('btn-kick-character')
-const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
-
 const character = {
     name: 'Pikachu',
     maxDamageHP: 25,
@@ -12,6 +9,7 @@ const character = {
     elProgressbar: document.getElementById('progressbar-character'),
     changeHP,
     clickCounter: countButtonClick(),
+    $btnAttack: document.getElementById('btn-kick-character')
 }
 
 const enemy = {
@@ -25,13 +23,14 @@ const enemy = {
     elProgressbar: document.getElementById('progressbar-enemy'),
     changeHP,
     clickCounter: countButtonClick(),
+    $btnAttack: document.getElementById('btn-kick-enemy')
 }
 
 function renderHP() {
     const {hp: {current, total}} = this
 
     this.elHP.innerText = current + '/' + total
-    this.elProgressbar.style.width = (current / total) * 100  + '%'
+    this.elProgressbar.style.width = (current / total) * 100 + '%'
 }
 
 function changeHP(count) {
@@ -59,29 +58,38 @@ function addLogRow(input) {
 }
 
 function countButtonClick() {
+    const maxClick = 6
     let count = 0
 
     return function (n = 0) {
         count += n
+
+        const remainingClicks = maxClick - count
+        console.log(`${this.name} has ${remainingClicks} more clicks`)
+        if (count >= maxClick) {
+            this.$btnAttack.disabled = true
+        }
+
         console.log(`${this.name} clicked: ${count} times`)
     }
 
 }
 
-$btnAttackCharacter.addEventListener('click', () => {
+character.$btnAttack.addEventListener('click', () => {
+    const {name, maxDamageHP} = character
     character.clickCounter(1)
+    console.log(`Kick ${name}`)
 
-    console.log('Kick character')
-
-    enemy.changeHP(random(character.maxDamageHP))
+    enemy.changeHP(random(maxDamageHP))
 })
 
-$btnAttackEnemy.addEventListener('click', () => {
+enemy.$btnAttack.addEventListener('click', () => {
+    const {name, maxDamageHP} = enemy
     enemy.clickCounter(1)
 
-    console.log('Kick enemy')
+    console.log(`Kick ${name}`)
 
-    character.changeHP(random(enemy.maxDamageHP))
+    character.changeHP(random(maxDamageHP))
 })
 
 const random = (max) => Math.ceil(Math.random() * max)
@@ -96,8 +104,8 @@ function initGame() {
 function finishGame(name) {
     alert(name + ' проиграл')
 
-    $btnAttackEnemy.disabled = true
-    $btnAttackCharacter.disabled = true
+    character.$btnAttack.disabled = true
+    enemy.$btnAttack.disabled = true
 }
 
 initGame()
