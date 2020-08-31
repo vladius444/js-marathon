@@ -1,6 +1,3 @@
-const $btnAttackCharacter = document.getElementById('btn-kick-character')
-const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
-
 const character = {
     name: 'Pikachu',
     maxDamageHP: 25,
@@ -11,6 +8,8 @@ const character = {
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
     changeHP,
+    clickCounter: countButtonClick(),
+    $btnAttack: document.getElementById('btn-kick-character')
 }
 
 const enemy = {
@@ -23,13 +22,15 @@ const enemy = {
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
     changeHP,
+    clickCounter: countButtonClick(),
+    $btnAttack: document.getElementById('btn-kick-enemy')
 }
 
 function renderHP() {
     const {hp: {current, total}} = this
 
     this.elHP.innerText = current + '/' + total
-    this.elProgressbar.style.width = (current / total) * 100  + '%'
+    this.elProgressbar.style.width = (current / total) * 100 + '%'
 }
 
 function changeHP(count) {
@@ -56,21 +57,42 @@ function addLogRow(input) {
     $logs.insertBefore($p, $logs.children[0])
 }
 
-$btnAttackCharacter.addEventListener('click', () => {
-    console.log('Kick character')
+function countButtonClick() {
+    const maxClick = 6
+    let count = 0
 
-    enemy.changeHP(random(character.maxDamageHP))
-})
+    return function (n = 0) {
+        count += n
 
-$btnAttackEnemy.addEventListener('click', () => {
-    console.log('Kick enemy')
+        const remainingClicks = maxClick - count
+        console.log(`${this.name} has ${remainingClicks} more clicks`)
+        if (count >= maxClick) {
+            this.$btnAttack.disabled = true
+        }
 
-    character.changeHP(random(enemy.maxDamageHP))
-})
+        console.log(`${this.name} clicked: ${count} times`)
+    }
 
-function random(max) {
-    return Math.ceil(Math.random() * max)
 }
+
+character.$btnAttack.addEventListener('click', () => {
+    const {name, maxDamageHP} = character
+    character.clickCounter(1)
+    console.log(`Kick ${name}`)
+
+    enemy.changeHP(random(maxDamageHP))
+})
+
+enemy.$btnAttack.addEventListener('click', () => {
+    const {name, maxDamageHP} = enemy
+    enemy.clickCounter(1)
+
+    console.log(`Kick ${name}`)
+
+    character.changeHP(random(maxDamageHP))
+})
+
+const random = (max) => Math.ceil(Math.random() * max)
 
 function initGame() {
     console.log("START GAME")
@@ -82,8 +104,8 @@ function initGame() {
 function finishGame(name) {
     alert(name + ' проиграл')
 
-    $btnAttackEnemy.disabled = true
-    $btnAttackCharacter.disabled = true
+    character.$btnAttack.disabled = true
+    enemy.$btnAttack.disabled = true
 }
 
 initGame()
