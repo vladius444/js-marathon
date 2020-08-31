@@ -1,3 +1,19 @@
+const $btnAttackCharacter = document.getElementById('btn-kick-character')
+const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
+
+const MaxAttacks = 10
+const btnCountJolt = countButtonClick(MaxAttacks, $btnAttackCharacter)
+$btnAttackCharacter.addEventListener('click', () => {
+    btnCountJolt()
+    enemy.changeHP(random(character.maxDamageHP))
+})
+
+const btnCountFlame = countButtonClick(MaxAttacks, $btnAttackEnemy)
+$btnAttackEnemy.addEventListener('click', () => {
+    btnCountFlame()
+    character.changeHP(random(enemy.maxDamageHP))
+})
+
 const character = {
     name: 'Pikachu',
     maxDamageHP: 25,
@@ -8,8 +24,6 @@ const character = {
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
     changeHP,
-    clickCounter: countButtonClick(),
-    $btnAttack: document.getElementById('btn-kick-character')
 }
 
 const enemy = {
@@ -22,8 +36,6 @@ const enemy = {
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
     changeHP,
-    clickCounter: countButtonClick(),
-    $btnAttack: document.getElementById('btn-kick-enemy')
 }
 
 function renderHP() {
@@ -57,42 +69,27 @@ function addLogRow(input) {
     $logs.insertBefore($p, $logs.children[0])
 }
 
-function countButtonClick() {
-    const maxClick = 6
-    let count = 0
+function countButtonClick(count = 6, el) {
+    const innerText = el.innerText
+    el.innerText = `${innerText} (${count})`
 
-    return function (n = 0) {
-        count += n
-
-        const remainingClicks = maxClick - count
-        console.log(`${this.name} has ${remainingClicks} more clicks`)
-        if (count >= maxClick) {
-            this.$btnAttack.disabled = true
+    return function () {
+        count--
+        if (count === 0) {
+            el.disabled = true
         }
 
-        console.log(`${this.name} clicked: ${count} times`)
+        el.innerText = `${innerText} (${count})`
+
+        return count
     }
 
 }
 
-character.$btnAttack.addEventListener('click', () => {
-    const {name, maxDamageHP} = character
-    character.clickCounter(1)
-    console.log(`Kick ${name}`)
-
-    enemy.changeHP(random(maxDamageHP))
-})
-
-enemy.$btnAttack.addEventListener('click', () => {
-    const {name, maxDamageHP} = enemy
-    enemy.clickCounter(1)
-
-    console.log(`Kick ${name}`)
-
-    character.changeHP(random(maxDamageHP))
-})
-
-const random = (max) => Math.ceil(Math.random() * max)
+const random = (max, min = 0) => {
+    const num = max - min
+    return Math.ceil(Math.random() * num) + min
+}
 
 function initGame() {
     console.log("START GAME")
@@ -102,10 +99,10 @@ function initGame() {
 }
 
 function finishGame(name) {
-    alert(name + ' проиграл')
+    $btnAttackCharacter.disabled = true
+    $btnAttackEnemy.disabled = true
 
-    character.$btnAttack.disabled = true
-    enemy.$btnAttack.disabled = true
+    alert(name + ' проиграл')
 }
 
 initGame()
