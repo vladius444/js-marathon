@@ -5,14 +5,22 @@ const player1 = new Pokemon({
     name: 'Pikachu',
     hp: 500,
     type: 'electric',
-    selectorName: 'character'
+    selectorName: 'character',
+    damage: {
+        max: 80,
+        min: 40
+    }
 })
 
 const player2 = new Pokemon({
     name: 'Charmander',
     hp: 500,
     type: 'fire',
-    selectorName: 'enemy'
+    selectorName: 'enemy',
+    damage: {
+        max: 82,
+        min: 35
+    }
 })
 
 const $btnAttackCharacter = document.getElementById('btn-kick-character')
@@ -22,21 +30,27 @@ const MaxAttacks = 10
 const btnCountJolt = countButtonClick(MaxAttacks, $btnAttackCharacter)
 $btnAttackCharacter.addEventListener('click', () => {
     btnCountJolt()
-    player2.changeHP(random(60, 20), function (count) {
+
+    const defender = player2
+
+    defender.changeHP(random(player1.damage.max, player1.damage.min), function (count) {
         addLogRow(generateBattleLog(player1, player2, count))
     })
 
-    // player2.changeHP(random(character.maxDamageHP))
+    finishGame(defender)
 })
 
 const btnCountFlame = countButtonClick(MaxAttacks, $btnAttackEnemy)
 $btnAttackEnemy.addEventListener('click', () => {
     btnCountFlame()
-    player1.changeHP(random(60, 20), function (count) {
+
+    const defender = player1
+
+    defender.changeHP(random(player2.damage.max, player2.damage.min), function (count) {
         addLogRow(generateBattleLog(player2, player1, count))
     })
 
-    // character.changeHP(random(enemy.maxDamageHP))
+    finishGame(defender)
 })
 
 const $logs = document.querySelector('#logs')
@@ -65,10 +79,13 @@ function countButtonClick(count = 6, el) {
     }
 }
 
-//todo вызывать
-function finishGame(name) {
-    $btnAttackCharacter.disabled = true
-    $btnAttackEnemy.disabled = true
+function finishGame(player) {
+    const {name, hp: {current}} = player
 
-    alert(name + ' проиграл')
+    if (current <= 0) {
+        $btnAttackCharacter.disabled = true
+        $btnAttackEnemy.disabled = true
+
+        alert(name + ' проиграл')
+    }
 }
