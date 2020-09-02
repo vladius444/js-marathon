@@ -1,5 +1,5 @@
 import Pokemon from "./pokemon.js";
-import {random, generateBattleLog} from "./utils.js";
+import {random, generateBattleLog, finishGame, $btnAttackEnemy, $btnAttackCharacter} from "./utils.js";
 
 const player1 = new Pokemon({
     name: 'Pikachu',
@@ -22,9 +22,6 @@ const player2 = new Pokemon({
         min: 35
     }
 })
-
-const $btnAttackCharacter = document.getElementById('btn-kick-character')
-const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
 
 const MaxAttacks = 10
 const btnCountJolt = countButtonClick(MaxAttacks, $btnAttackCharacter)
@@ -76,16 +73,5 @@ function countButtonClick(count = 6, el) {
         el.innerText = `${innerText} (${count})`
 
         return count
-    }
-}
-
-function finishGame(player) {
-    const {name, hp: {current}} = player
-
-    if (current <= 0) {
-        $btnAttackCharacter.disabled = true
-        $btnAttackEnemy.disabled = true
-
-        alert(name + ' проиграл')
     }
 }

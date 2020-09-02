@@ -23,3 +23,17 @@ export function generateBattleLog(firstPerson, secondPerson, damage) {
 
     return logs[random(logs.length) - 1]
 }
+
+export const $btnAttackCharacter = document.getElementById('btn-kick-character')
+export const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
+
+export function finishGame(player) {
+    const {name, hp: {current}} = player
+
+    if (current <= 0) {
+        $btnAttackCharacter.disabled = true
+        $btnAttackEnemy.disabled = true
+
+        alert(name + ' проиграл')
+    }
+}
