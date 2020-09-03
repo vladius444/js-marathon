@@ -67,6 +67,8 @@ class Game {
                     // })
 
                     this.isGameFinished()
+
+                    this.autoEnemyAttack()
                 })
 
                 this.$controlPlayer1.appendChild($btn)
@@ -93,6 +95,7 @@ class Game {
                 const $btn = document.createElement('button')
                 $btn.classList.add('button')
                 $btn.innerText = item.name
+                // $btn.disabled = true
 
                 const btnCount = countButtonClick(item.maxCount, $btn)
 
@@ -113,6 +116,14 @@ class Game {
                 this.$controlPlayer2.appendChild($btn)
             }
         )
+    }
+
+    autoEnemyAttack = () => {
+        const allEnemyButtons = document.querySelectorAll('.control.player2 .button');
+        const randomButton = allEnemyButtons[random(allEnemyButtons.length - 1)]
+
+        //todo если disable кнопка, то надо след искать. Если не осталось свободных - finish game
+        randomButton.click()
     }
 }
 
