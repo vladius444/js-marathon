@@ -48,6 +48,10 @@ class Pokemon extends Selectors {
         cb && cb(count);
     }
 
+    isDead = () => {
+        return this.hp.current <= 0
+    }
+
 }
 
 export default Pokemon

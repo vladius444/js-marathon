@@ -23,24 +23,8 @@ class Game {
         this.summonNewEnemy()
     }
 
-    isGameFinished = () => {
-        if (this.player1.hp.current <= 0) {
-            const allGameButtons = document.querySelectorAll('.control .button');
-            allGameButtons.forEach($item => $item.disabled = true);
-
-            alert('YOU LOST')
-
-
-            // this.resetGame()
-        }
-
-        if (this.player2.hp.current <= 0) {
-            this.nextRound()
-        }
-    }
-
     summonNewCharacter = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1 )]
+        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
         this.player1 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player1',
@@ -67,14 +51,17 @@ class Game {
 
                     this.player2.changeHP(random(item.maxDamage, item.minDamage))
 
+                    if (this.player2.isDead()) {
+                        this.nextRound()
+                    } else {
+                        this.autoEnemyAttack()
+                    }
+
                     //todo ЛОГ
                     // this.player1.changeHP(random(item.maxDamage, item.minDamage), function (count) {
                     //     addLogRow(generateBattleLog(this.player1, this.player2, count))
                     // })
 
-                    this.isGameFinished()
-
-                    this.autoEnemyAttack()
                 })
 
                 this.$controlPlayer1.appendChild($btn)
@@ -83,7 +70,7 @@ class Game {
     }
 
     summonNewEnemy = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1 )]
+        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
         this.player2 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player2',
@@ -101,7 +88,6 @@ class Game {
                 const $btn = document.createElement('button')
                 $btn.classList.add('button')
                 $btn.innerText = item.name
-                // $btn.disabled = true
 
                 const btnCount = countButtonClick(item.maxCount, $btn)
 
@@ -111,12 +97,17 @@ class Game {
 
                     this.player1.changeHP(random(item.maxDamage, item.minDamage))
 
+                    if (this.player1.isDead()) {
+                        alert('YOU LOST')
+
+                        const allGameButtons = document.querySelectorAll('.control .button');
+                        allGameButtons.forEach($item => $item.disabled = true);
+                    }
+
                     //todo ЛОГ
                     // this.player1.changeHP(random(item.maxDamage, item.minDamage), function (count) {
                     //     addLogRow(generateBattleLog(this.player1, this.player2, count))
                     // })
-
-                    this.isGameFinished()
                 })
 
                 this.$controlPlayer2.appendChild($btn)
