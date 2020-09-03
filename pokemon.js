@@ -1,24 +1,23 @@
 class Selectors {
     constructor(name) {
+        console.log(`health-${name}`)
         this.elHP = document.getElementById(`health-${name}`)
         this.elProgressbar = document.getElementById(`progressbar-${name}`)
     }
 }
 
 class Pokemon extends Selectors {
-    constructor({name, hp, type, selectorName, damage: {max, min}}) {
+    constructor({name, hp, type, selectorName, attacks = []}) {
         super(selectorName)
         this.name = name
         this.hp = {
             total: hp,
             current: hp
         }
-        this.damage = {
-            max: max,
-            min: min
-        }
 
         this.type = type
+
+        this.attacks = attacks
 
         this.renderHP()
     }
