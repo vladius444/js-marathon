@@ -1,6 +1,16 @@
 import Pokemon from "./pokemon.js";
-import {random, generateBattleLog, finishGame, $btnAttackEnemy, $btnAttackCharacter} from "./utils.js";
+import {random, generateBattleLog, finishGame, countButtonClick} from "./utils.js";
 import {pokemons} from "./pokemons.js";
+
+const $logs = document.querySelector('#logs')
+
+function addLogRow(input) {
+    const $p = document.createElement('p')
+
+    $p.innerHTML = input
+
+    $logs.insertBefore($p, $logs.children[0])
+}
 
 const pikachu = pokemons.find(item => item.name === 'Pikachu')
 const player1 = new Pokemon({
@@ -11,8 +21,13 @@ const player1 = new Pokemon({
 const $controlPlayer1 = document.querySelector('.control.player1')
 const $controlPlayer2 = document.querySelector('.control.player2')
 
+const charmander = pokemons.find(item => item.name === 'Charmander')
+const player2 = new Pokemon({
+    ...charmander,
+    selectorName: 'player2',
+})
+
 player1.attacks.forEach(item => {
-        console.log(item)
         const $btn = document.createElement('button')
         $btn.classList.add('button')
         $btn.innerText = item.name
@@ -35,14 +50,7 @@ player1.attacks.forEach(item => {
     }
 )
 
-const charmander = pokemons.find(item => item.name === 'Charmander')
-const player2 = new Pokemon({
-    ...charmander,
-    selectorName: 'player1',
-})
-
 player2.attacks.forEach(item => {
-        console.log(item)
         const $btn = document.createElement('button')
         $btn.classList.add('button')
         $btn.innerText = item.name
@@ -65,28 +73,4 @@ player2.attacks.forEach(item => {
     }
 )
 
-const $logs = document.querySelector('#logs')
 
-function addLogRow(input) {
-    const $p = document.createElement('p')
-
-    $p.innerHTML = input
-
-    $logs.insertBefore($p, $logs.children[0])
-}
-
-function countButtonClick(count = 6, el) {
-    const innerText = el.innerText
-    el.innerText = `${innerText} (${count})`
-
-    return function () {
-        count--
-        if (count === 0) {
-            el.disabled = true
-        }
-
-        el.innerText = `${innerText} (${count})`
-
-        return count
-    }
-}

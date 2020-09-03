@@ -1,6 +1,5 @@
 class Selectors {
     constructor(name) {
-        console.log(`health-${name}`)
         this.elHP = document.getElementById(`health-${name}`)
         this.elProgressbar = document.getElementById(`progressbar-${name}`)
     }
@@ -24,6 +23,12 @@ class Pokemon extends Selectors {
 
     renderHP = () => {
         const {hp: {current, total}} = this
+
+        if (current < 20) {
+            this.elProgressbar.classList.add('critical')
+        } else if (current < 60) {
+            this.elProgressbar.classList.add('low')
+        }
 
         this.elHP.innerText = current + '/' + total
         this.elProgressbar.style.width = (current / total) * 100 + '%'

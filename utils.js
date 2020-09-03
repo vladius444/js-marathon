@@ -24,16 +24,33 @@ export function generateBattleLog(firstPerson, secondPerson, damage) {
     return logs[random(logs.length) - 1]
 }
 
-export const $btnAttackCharacter = document.getElementById('btn-kick-player1')
-export const $btnAttackEnemy = document.getElementById('btn-kick-player2')
+// export const $btnAttackCharacter = document.getElementById('btn-kick-player1')
+// export const $btnAttackEnemy = document.getElementById('btn-kick-player2')
 
 export function finishGame(player) {
     const {name, hp: {current}} = player
 
     if (current <= 0) {
-        $btnAttackCharacter.disabled = true
-        $btnAttackEnemy.disabled = true
+        // $btnAttackCharacter.disabled = true
+        // $btnAttackEnemy.disabled = true
 
         alert(name + ' проиграл')
+    }
+}
+
+
+export function countButtonClick(count = 6, el) {
+    const innerText = el.innerText
+    el.innerText = `${innerText} (${count})`
+
+    return function () {
+        count--
+        if (count === 0) {
+            el.disabled = true
+        }
+
+        el.innerText = `${innerText} (${count})`
+
+        return count
     }
 }
