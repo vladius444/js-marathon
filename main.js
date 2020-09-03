@@ -11,8 +11,12 @@ function addLogRow(input) {
 }
 
 const game = new Game
-game.startGame()
 
+const $btnStartGame = document.getElementById('start-game-btn')
+const $btnResetGame = document.getElementById('reset-game-btn')
+
+$btnStartGame.addEventListener('click', () => game.startGame())
+$btnResetGame.addEventListener('click', () => game.resetGame())
 
 
 

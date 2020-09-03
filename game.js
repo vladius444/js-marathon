@@ -25,7 +25,13 @@ class Game {
 
     isGameFinished = () => {
         if (this.player1.hp.current <= 0) {
-            this.resetGame()
+            const allGameButtons = document.querySelectorAll('.control .button');
+            allGameButtons.forEach($item => $item.disabled = true);
+
+            alert('YOU LOST')
+
+
+            // this.resetGame()
         }
 
         if (this.player2.hp.current <= 0) {
