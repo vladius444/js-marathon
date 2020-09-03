@@ -28,6 +28,8 @@ class Pokemon extends Selectors {
             this.elProgressbar.classList.add('critical')
         } else if (current < 60) {
             this.elProgressbar.classList.add('low')
+        } else {
+            this.elProgressbar.classList.remove('critical', 'low')
         }
 
         this.elHP.innerText = current + '/' + total
