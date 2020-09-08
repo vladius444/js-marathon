@@ -6,25 +6,31 @@ class Selectors {
 }
 
 class Pokemon extends Selectors {
-    constructor({name, hp, type, selectorName, damage: {max, min}}) {
+    constructor({name, hp, type, selectorName, attacks = []}) {
         super(selectorName)
         this.name = name
         this.hp = {
             total: hp,
             current: hp
         }
-        this.damage = {
-            max: max,
-            min: min
-        }
 
         this.type = type
+
+        this.attacks = attacks
 
         this.renderHP()
     }
 
     renderHP = () => {
         const {hp: {current, total}} = this
+
+        if (current < 20) {
+            this.elProgressbar.classList.add('critical')
+        } else if (current < 60) {
+            this.elProgressbar.classList.add('low')
+        } else {
+            this.elProgressbar.classList.remove('critical', 'low')
+        }
 
         this.elHP.innerText = current + '/' + total
         this.elProgressbar.style.width = (current / total) * 100 + '%'
@@ -40,6 +46,10 @@ class Pokemon extends Selectors {
         this.renderHP();
 
         cb && cb(count);
+    }
+
+    isDead = () => {
+        return this.hp.current <= 0
     }
 
 }

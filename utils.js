@@ -24,16 +24,18 @@ export function generateBattleLog(firstPerson, secondPerson, damage) {
     return logs[random(logs.length) - 1]
 }
 
-export const $btnAttackCharacter = document.getElementById('btn-kick-character')
-export const $btnAttackEnemy = document.getElementById('btn-kick-enemy')
+export function countButtonClick(count = 6, el) {
+    const innerText = el.innerText
+    el.innerText = `${innerText} (${count})`
 
-export function finishGame(player) {
-    const {name, hp: {current}} = player
+    return function () {
+        count--
+        if (count === 0) {
+            el.disabled = true
+        }
 
-    if (current <= 0) {
-        $btnAttackCharacter.disabled = true
-        $btnAttackEnemy.disabled = true
+        el.innerText = `${innerText} (${count})`
 
-        alert(name + ' проиграл')
+        return count
     }
 }
