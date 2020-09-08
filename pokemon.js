@@ -1,14 +1,16 @@
 class Selectors {
-    constructor(name) {
-        this.elHP = document.getElementById(`health-${name}`)
-        this.elProgressbar = document.getElementById(`progressbar-${name}`)
+    constructor(selectorName) {
+        this.elHP = document.getElementById(`health-${selectorName}`)
+        this.elProgressbar = document.getElementById(`progressbar-${selectorName}`)
+        this.elControl = document.querySelector(`.control.${selectorName}`)
     }
 }
 
 class Pokemon extends Selectors {
-    constructor({name, hp, type, selectorName, attacks = []}) {
+    constructor({id, name, hp, type, selectorName, attacks = []}) {
         super(selectorName)
         this.name = name
+        this.id = id
         this.hp = {
             total: hp,
             current: hp
