@@ -10,7 +10,7 @@ function addLogRow(input) {
     $logs.insertBefore($p, $logs.children[0])
 }
 
-const game = new Game
+const game = new Game()
 
 const $btnStartGame = document.getElementById('start-game-btn')
 const $btnResetGame = document.getElementById('reset-game-btn')

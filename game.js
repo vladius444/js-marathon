@@ -1,6 +1,7 @@
 import Pokemon from "./pokemon.js";
-import {pokemons} from "./pokemons.js";
 import {countButtonClick, generateBattleLog, random} from "./utils.js";
+
+const API = 'https://reactmarathon-api.netlify.app/api'
 
 class Game {
     constructor() {
@@ -8,10 +9,10 @@ class Game {
         this.$controlPlayer2 = document.querySelector('.control.player2')
     }
 
-    startGame = () => {
+    startGame = async () => {
         console.log('NEW GAME STARTED')
 
-        this.summonNewCharacter()
+        await this.summonNewCharacter()
         this.summonNewEnemy()
     }
 
@@ -23,8 +24,19 @@ class Game {
         this.summonNewEnemy()
     }
 
-    summonNewCharacter = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
+    getPokemons = async () => {
+        const response = await fetch(`${API}/pokemons`)
+        return await response.json()
+    }
+
+    getRandomPokemon = async () => {
+        const response = await fetch(`${API}/pokemons?random=true`)
+        return await response.json()
+    }
+
+    summonNewCharacter = async () => {
+        const randomEnemyPokemon = await this.getRandomPokemon()
+
         this.player1 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player1',
@@ -69,8 +81,8 @@ class Game {
         )
     }
 
-    summonNewEnemy = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
+    summonNewEnemy = async () => {
+        const randomEnemyPokemon = await this.getRandomPokemon()
         this.player2 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player2',
