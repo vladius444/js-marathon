@@ -1,30 +1,87 @@
 import Pokemon from "./pokemon.js";
-import {pokemons} from "./pokemons.js";
 import {countButtonClick, generateBattleLog, random} from "./utils.js";
 
-class Game {
-    constructor() {
-        this.$controlPlayer1 = document.querySelector('.control.player1')
-        this.$controlPlayer2 = document.querySelector('.control.player2')
-    }
+const API = 'https://reactmarathon-api.netlify.app/api'
 
-    startGame = () => {
+class Game {
+    startGame = async () => {
         console.log('NEW GAME STARTED')
 
-        this.summonNewCharacter()
-        this.summonNewEnemy()
+        await this.summonNewCharacter()
+        await this.summonNewEnemy()
+
+        this.createAttackButtons(this.player1, this.player2)
     }
 
-    resetGame = () => {
-        this.startGame()
+    finishGame = () => {
+        alert("YOU LOSE")
     }
 
-    nextRound = () => {
-        this.summonNewEnemy()
+    resetGame = async () => {
+        await this.startGame()
     }
 
-    summonNewCharacter = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
+    nextRound = async () => {
+        await this.summonNewEnemy()
+    }
+
+    getPokemons = async () => {
+        const response = await fetch(`${API}/pokemons`)
+        return await response.json()
+    }
+
+    getRandomPokemon = async () => {
+        const response = await fetch(`${API}/pokemons?random=true`)
+        return await response.json()
+    }
+
+    fight = async (player1ID, attackID, player2ID) => {
+        const response = await fetch(`${API}/fight?player1id=${player1ID}&attackId=${attackID}&player2id=${player2ID}`)
+        return await response.json()
+    }
+
+    createAttackButtons = (attacker, defender) => {
+        const {attacks, id} = attacker
+
+        attacks.forEach(item => {
+            const $btn = document.createElement('button')
+            $btn.classList.add('button')
+            $btn.innerText = item.name
+
+            const btnCount = countButtonClick(item.maxCount, $btn)
+
+            $btn.addEventListener('click', async () => {
+                console.log(`click button ${$btn.innerText}`)
+                btnCount()
+
+                const fightResult = await this.fight(id, item.id, defender.id)
+
+                defender.changeHP(fightResult.kick.player2)
+
+                if (defender.isDead()) {
+                    await this.nextRound()
+                }
+
+                attacker.changeHP(fightResult.kick.player1)
+                if (attacker.isDead()) {
+                    this.finishGame()
+                }
+
+
+                //todo ЛОГ
+                // this.player1.changeHP(random(item.maxDamage, item.minDamage), function (count) {
+                //     addLogRow(generateBattleLog(this.player1, this.player2, count))
+                // })
+
+            })
+
+            attacker.elControl.appendChild($btn)
+        })
+    }
+
+    summonNewCharacter = async () => {
+        const randomEnemyPokemon = await this.getRandomPokemon()
+
         this.player1 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player1',
@@ -37,40 +94,10 @@ class Game {
 
         const allEnemyButtons = document.querySelectorAll('.control.player1 .button');
         allEnemyButtons.forEach($item => $item.remove());
-
-        this.player1.attacks.forEach(item => {
-                const $btn = document.createElement('button')
-                $btn.classList.add('button')
-                $btn.innerText = item.name
-
-                const btnCount = countButtonClick(item.maxCount, $btn)
-
-                $btn.addEventListener('click', () => {
-                    console.log(`click button ${$btn.innerText}`)
-                    btnCount()
-
-                    this.player2.changeHP(random(item.maxDamage, item.minDamage))
-
-                    if (this.player2.isDead()) {
-                        this.nextRound()
-                    } else {
-                        this.autoEnemyAttack()
-                    }
-
-                    //todo ЛОГ
-                    // this.player1.changeHP(random(item.maxDamage, item.minDamage), function (count) {
-                    //     addLogRow(generateBattleLog(this.player1, this.player2, count))
-                    // })
-
-                })
-
-                this.$controlPlayer1.appendChild($btn)
-            }
-        )
     }
 
-    summonNewEnemy = () => {
-        const randomEnemyPokemon = pokemons[random(pokemons.length - 1)]
+    summonNewEnemy = async () => {
+        const randomEnemyPokemon = await this.getRandomPokemon()
         this.player2 = new Pokemon({
             ...randomEnemyPokemon,
             selectorName: 'player2',
@@ -80,47 +107,6 @@ class Game {
         $elImg.src = randomEnemyPokemon.img;
         const $elEnemyName = document.getElementById('name-player2');
         $elEnemyName.innerText = randomEnemyPokemon.name;
-
-        const allEnemyButtons = document.querySelectorAll('.control.player2 .button');
-        allEnemyButtons.forEach($item => $item.remove());
-
-        this.player2.attacks.forEach(item => {
-                const $btn = document.createElement('button')
-                $btn.classList.add('button')
-                $btn.innerText = item.name
-
-                const btnCount = countButtonClick(item.maxCount, $btn)
-
-                $btn.addEventListener('click', () => {
-                    console.log(`click button ${$btn.innerText}`)
-                    btnCount()
-
-                    this.player1.changeHP(random(item.maxDamage, item.minDamage))
-
-                    if (this.player1.isDead()) {
-                        alert('YOU LOST')
-
-                        const allGameButtons = document.querySelectorAll('.control .button');
-                        allGameButtons.forEach($item => $item.disabled = true);
-                    }
-
-                    //todo ЛОГ
-                    // this.player1.changeHP(random(item.maxDamage, item.minDamage), function (count) {
-                    //     addLogRow(generateBattleLog(this.player1, this.player2, count))
-                    // })
-                })
-
-                this.$controlPlayer2.appendChild($btn)
-            }
-        )
-    }
-
-    autoEnemyAttack = () => {
-        const allEnemyButtons = document.querySelectorAll('.control.player2 .button');
-        const randomButton = allEnemyButtons[random(allEnemyButtons.length - 1)]
-
-        //todo если disable кнопка, то надо след искать. Если не осталось свободных - finish game
-        randomButton.click()
     }
 }
 
